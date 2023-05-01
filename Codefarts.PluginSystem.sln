@@ -1,6 +1,23 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Codefarts.PluginSystem", "Codefarts.PluginSystem\Codefarts.PluginSystem.csproj", "{C4EA1FC2-023F-4EB5-B01B-DE2C83AC2594}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Codefarts.PluginSystemDemo", "Codefarts.PluginSystemDemo\Codefarts.PluginSystemDemo.csproj", "{C4EA1FC2-023F-4EB5-B01B-DE2C83AC2594}"
+	ProjectSection(ProjectDependencies) = postProject
+		{4785B89C-14E0-4CC9-9E5A-D89E03986F95} = {4785B89C-14E0-4CC9-9E5A-D89E03986F95}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Codefarts.PluginSystem", "Codefarts.PluginSystem\Codefarts.PluginSystem.csproj", "{3E1B901D-DE07-4B32-A675-D6A14E338593}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Plugins", "Plugins", "{4BB53D22-A2A2-40DA-921D-C86EFB8ADF06}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "References", "References", "{24505B25-5F2A-4566-A518-227E6816C584}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Codefarts.TypeLocatorNET6", "..\Codefarts.TypeLocator\Codefarts.TypeLocatorNET6\Codefarts.TypeLocatorNET6.csproj", "{77679332-9AE8-4EF7-950F-A24C8EFA0C75}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MainMenuPlugin", "Plugins\MainMenuPlugin\MainMenuPlugin.csproj", "{4785B89C-14E0-4CC9-9E5A-D89E03986F95}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Codefarts.PluginSystemDemo.Models", "Codefarts.PluginSystemDemo.Models\Codefarts.PluginSystemDemo.Models.csproj", "{5B530499-87D5-47F2-9A97-3F996AD68CAC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Codefarts.WPFCommonNET6", "..\Codefarts.WPFCommon\Codefarts.WPFCommonNET6\Codefarts.WPFCommonNET6.csproj", "{6898123E-6DCC-494C-A504-FE6F97958EA7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -12,5 +29,30 @@ Global
 		{C4EA1FC2-023F-4EB5-B01B-DE2C83AC2594}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C4EA1FC2-023F-4EB5-B01B-DE2C83AC2594}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C4EA1FC2-023F-4EB5-B01B-DE2C83AC2594}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3E1B901D-DE07-4B32-A675-D6A14E338593}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3E1B901D-DE07-4B32-A675-D6A14E338593}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3E1B901D-DE07-4B32-A675-D6A14E338593}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3E1B901D-DE07-4B32-A675-D6A14E338593}.Release|Any CPU.Build.0 = Release|Any CPU
+		{77679332-9AE8-4EF7-950F-A24C8EFA0C75}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{77679332-9AE8-4EF7-950F-A24C8EFA0C75}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{77679332-9AE8-4EF7-950F-A24C8EFA0C75}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{77679332-9AE8-4EF7-950F-A24C8EFA0C75}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4785B89C-14E0-4CC9-9E5A-D89E03986F95}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4785B89C-14E0-4CC9-9E5A-D89E03986F95}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4785B89C-14E0-4CC9-9E5A-D89E03986F95}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4785B89C-14E0-4CC9-9E5A-D89E03986F95}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5B530499-87D5-47F2-9A97-3F996AD68CAC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5B530499-87D5-47F2-9A97-3F996AD68CAC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5B530499-87D5-47F2-9A97-3F996AD68CAC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5B530499-87D5-47F2-9A97-3F996AD68CAC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6898123E-6DCC-494C-A504-FE6F97958EA7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6898123E-6DCC-494C-A504-FE6F97958EA7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6898123E-6DCC-494C-A504-FE6F97958EA7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6898123E-6DCC-494C-A504-FE6F97958EA7}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{77679332-9AE8-4EF7-950F-A24C8EFA0C75} = {24505B25-5F2A-4566-A518-227E6816C584}
+		{4785B89C-14E0-4CC9-9E5A-D89E03986F95} = {4BB53D22-A2A2-40DA-921D-C86EFB8ADF06}
+		{6898123E-6DCC-494C-A504-FE6F97958EA7} = {24505B25-5F2A-4566-A518-227E6816C584}
 	EndGlobalSection
 EndGlobal

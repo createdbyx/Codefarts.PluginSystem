@@ -1,0 +1,27 @@
+﻿<Window x:Class="Codefarts.PluginSystemDemo.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:viewModels="clr-namespace:Codefarts.PluginSystem.ViewModels"
+        mc:Ignorable="d"
+        DataContext="{DynamicResource ViewModel}"
+        Title="{Binding Application.Title}" Height="450" Width="800"
+        x:Name="MainV">
+    <Window.Resources>
+        <viewModels:MainViewModel x:Key="ViewModel" />
+    </Window.Resources>
+
+    <Grid>
+        <Menu ItemsSource="{Binding Application.MainMenu}">
+            <Menu.ItemContainerStyle>
+                <Style TargetType="MenuItem">
+                    <Setter Property="Header" Value="{Binding Title}" />
+                    <Setter Property="ItemsSource" Value="{Binding SubMenus}" />
+                    <Setter Property="Command" Value="{Binding ElementName=MainV, Path=DataContext.RunMenuItem}" />
+                    <Setter Property="CommandParameter" Value="{Binding}" />
+                </Style>
+            </Menu.ItemContainerStyle>
+        </Menu>
+    </Grid>
+</Window>

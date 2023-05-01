@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<build>
+    <!--    <deploy path="P:\Codefarts Assemblies\$(ProjectName)\Latest\$(ConfigurationName)\" clean="true" />-->
+    <!--<copydir source="$(ProjectDir)$(OutDir)" destination="P:\Codefarts Assemblies\$(ProjectName)\Latest\$(ConfigurationName)\" clean="true" />-->
+    <copydir source="$(ProjectDir)$(OutDir)"
+             destination="$(ProjectDir)..\..\Codefarts.PluginSystemDemo\bin\Debug\net6.0-windows\Plugins\$(ProjectName)" clean="false"
+             allconditions="false" subfolders="false">
+        <condition value="$(ProjectName).dll" operator="endswith" ignorecase="true"/>
+        <condition value="$(ProjectName).plugin" operator="endswith" ignorecase="true"/>
+        <condition value="$(ProjectName).pdb" operator="endswith" ignorecase="true"/>
+    </copydir>
+
+    <updateversion ProjectFileName="$(ProjectPath)"/>
+</build>
