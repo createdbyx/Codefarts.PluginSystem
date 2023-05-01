@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>WinExe</OutputType>
+        <TargetFramework>net6.0-windows</TargetFramework>
+        <Nullable>enable</Nullable>
+        <UseWPF>true</UseWPF>
+        <LangVersion>default</LangVersion>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\Codefarts.TypeLocator\Codefarts.TypeLocatorNET6\Codefarts.TypeLocatorNET6.csproj" />
+      <ProjectReference Include="..\..\Codefarts.WPFCommon\Codefarts.WPFCommonNET6\Codefarts.WPFCommonNET6.csproj" />
+      <ProjectReference Include="..\Codefarts.PluginSystemDemo.Models\Codefarts.PluginSystemDemo.Models.csproj" />
+      <ProjectReference Include="..\Codefarts.PluginSystem\Codefarts.PluginSystem.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Models\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Codefarts.DependencyInjection.CodefartsIoc" Version="2023.4.26.38" />
+    </ItemGroup>
+
+</Project>
