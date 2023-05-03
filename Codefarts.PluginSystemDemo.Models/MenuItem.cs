@@ -9,35 +9,7 @@ public class MenuItem : BaseClass
 {
     public event EventHandler Selected;
     
-    private string title;
-    // private ICommand command;
-    // private object commandParameter;
-    //
-    // public object CommandParameter
-    // {
-    //     get
-    //     {
-    //         return this.commandParameter;
-    //     }
-    //
-    //     set
-    //     {
-    //         this.SetField(ref this.commandParameter, value);
-    //     }
-    // }
-    //
-    // public ICommand Command
-    // {
-    //     get
-    //     {
-    //         return this.command;
-    //     }
-    //
-    //     set
-    //     {
-    //         this.SetField(ref this.command, value);
-    //     }
-    // }
+    private string title; 
 
     public MenuItem()
     {
@@ -80,7 +52,7 @@ public class MenuItem : BaseClass
         {
             return;
         }
-
+                       
         foreach (var invocation in invocationList)
         {
             try

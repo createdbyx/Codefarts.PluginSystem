@@ -1,10 +1,10 @@
-﻿using System.Diagnostics;
+using System.Diagnostics;
 using System.Runtime.Loader;
 using Codefarts.PluginSystemDemo.Models;
 
 namespace MainMenuPlugin;
 
-public class MainMenuPluigin : IPlugin<Application>
+public class TestPluigin : IPlugin<Application>
 {
     private Application application;
     private MenuItem fileMenu;
@@ -20,17 +20,17 @@ public class MainMenuPluigin : IPlugin<Application>
         var disconnectexceptionMenuItem = new MenuItem { Title = "_Disconnect" };
         disconnectexceptionMenuItem.Selected += (s, e) =>
         {
-            UnloadPlugin(this);
+            this.UnloadPlugin(this);
             this.Disconnect();
         };
 
         var exitMenuItem = new MenuItem { Title = "E_xit" };
         exitMenuItem.Selected += (_, _) => Debug.WriteLine("Exiting application...");
 
-        fileMenu.SubMenus.Add(exceptionMenuItem);
-        fileMenu.SubMenus.Add(disconnectexceptionMenuItem);
-        fileMenu.SubMenus.Add(exitMenuItem);
-        this.application.MainMenu.Add(fileMenu);
+        this.fileMenu.SubMenus.Add(exceptionMenuItem);
+        this.fileMenu.SubMenus.Add(disconnectexceptionMenuItem);
+        this.fileMenu.SubMenus.Add(exitMenuItem);
+        this.application.MainMenu.Add(this.fileMenu);
     }
 
     public void Disconnect()

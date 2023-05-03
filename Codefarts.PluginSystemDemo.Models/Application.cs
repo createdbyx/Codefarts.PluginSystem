@@ -45,14 +45,9 @@ public class Application : BaseClass
 
     public string Title
     {
-        get
-        {
-            return this.title;
-        }
-
-        set
-        {
-            this.SetField(ref this.title, value);
-        }
+        get => this.title;
+        set => this.SetField(ref this.title, value);
     }
+
+  
 }

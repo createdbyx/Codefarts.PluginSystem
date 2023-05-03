@@ -6,9 +6,6 @@
         <Nullable>enable</Nullable>
         <LangVersion>default</LangVersion>
     </PropertyGroup>
-
-    <ItemGroup>
-      <ProjectReference Include="..\Codefarts.PluginSystem\Codefarts.PluginSystem.csproj" />
-    </ItemGroup>
+ 
 
 </Project>
