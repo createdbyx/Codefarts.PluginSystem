@@ -8,35 +8,49 @@ public class MainMenuPluigin : IPlugin<Application>
 {
     private Application application;
     private MenuItem fileMenu;
+    private MenuItem exceptionMenuItem;
+    private MenuItem disconnectexceptionMenuItem;
+    private MenuItem exitMenuItem;
 
     public void Connect(Application model)
     {
         this.application = model ?? throw new ArgumentNullException(nameof(model));
-        this.fileMenu =this.application.MainMenu.FirstOrDefault(x=>x.Title=="_File") ??  new MenuItem { Title = "_File" };
+        this.fileMenu = this.application.MainMenu.FirstOrDefault(x => x.Title == "_File") ?? new MenuItem { Title = "_File" };
 
-        var exceptionMenuItem = new MenuItem { Title = "_Throw Exception" };
+        exceptionMenuItem = new MenuItem { Title = "_Throw Exception" };
         exceptionMenuItem.Selected += (_, _) => { throw new Exception("Thrown exception from plugin!"); };
 
-        var disconnectexceptionMenuItem = new MenuItem { Title = "_Disconnect" };
+        disconnectexceptionMenuItem = new MenuItem { Title = "_Disconnect" };
         disconnectexceptionMenuItem.Selected += (s, e) =>
         {
             UnloadPlugin(this);
             this.Disconnect();
         };
 
-        var exitMenuItem = new MenuItem { Title = "E_xit" };
+        exitMenuItem = new MenuItem { Title = "E_xit" };
         exitMenuItem.Selected += (_, _) => Debug.WriteLine("Exiting application...");
 
         fileMenu.SubMenus.Add(exceptionMenuItem);
         fileMenu.SubMenus.Add(disconnectexceptionMenuItem);
         fileMenu.SubMenus.Add(exitMenuItem);
-        this.application.MainMenu.Add(fileMenu);
+        if (!this.application.MainMenu.Any(x => x.Title == "_File"))
+        {
+            this.application.MainMenu.Add(fileMenu);
+        }
     }
 
     public void Disconnect()
     {
+        this.fileMenu.SubMenus.Remove(this.exceptionMenuItem);
+        this.fileMenu.SubMenus.Remove(this.disconnectexceptionMenuItem);
+        this.fileMenu.SubMenus.Remove(this.exitMenuItem);
+
         // cleanup first
-        this.application.MainMenu.Remove(this.fileMenu);
+        if (this.fileMenu.SubMenus.Count == 0)
+        {
+            this.application.MainMenu.Remove(this.fileMenu);
+        }
+
         this.application = null;
     }
 
