@@ -8,7 +8,7 @@ public class PluginInfo
     public string AssemblyFile { get; set; }
 }
 
-public class PluginReader  
+public class PluginReader
 {
     public PluginReader()
     {
@@ -30,18 +30,19 @@ public class PluginReader
 
     private IEnumerable<PluginInfo> ParseDoc(XElement? root)
     {
-        if (root == null)
+        var results = new List<PluginInfo>();
+        if (root == null || !root.Name.LocalName.Equals("plugins", StringComparison.InvariantCultureIgnoreCase))
         {
-            yield break;
+            return results;
         }
 
-        var plugins = root.Element("Plugins");
+        var plugins = root.Elements("plugin");
         if (plugins == null)
         {
-            yield break;
+            return results;
         }
 
-        foreach (var plugin in plugins.Elements("Plugin"))
+        foreach (var plugin in plugins)
         {
             var typeName = plugin.Attribute("class")?.Value;
             var assemblyFile = plugin.Attribute("assembly")?.Value;
@@ -50,11 +51,13 @@ public class PluginReader
                 continue;
             }
 
-            yield return new PluginInfo
+            results.Add(new PluginInfo
             {
                 TypeName = typeName,
                 AssemblyFile = assemblyFile
-            };
+            });
         }
+
+        return results;
     }
 }

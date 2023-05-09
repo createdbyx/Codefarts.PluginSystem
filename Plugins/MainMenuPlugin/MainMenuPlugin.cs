@@ -6,7 +6,7 @@ using Codefarts.PluginSystemDemo.Models;
 
 namespace MainMenuPlugin;
 
-public class MainMenuPluigin : IPlugin<Application>
+public class MainMenuPlugin : IPlugin<Application>
 {
     private Application application;
     private MenuItem fileMenu;
@@ -16,7 +16,7 @@ public class MainMenuPluigin : IPlugin<Application>
 
     private IDependencyInjectionProvider diProvider;
 
-    public MainMenuPluigin(IDependencyInjectionProvider diProvider)
+    public MainMenuPlugin(IDependencyInjectionProvider diProvider)
     {
         this.diProvider = diProvider ?? throw new ArgumentNullException(nameof(diProvider));
     }
@@ -32,8 +32,13 @@ public class MainMenuPluigin : IPlugin<Application>
         disconnectexceptionMenuItem = new MenuItem { Title = "_Disconnect" };
         disconnectexceptionMenuItem.Selected += (s, e) =>
         {
-            //   UnloadPlugin(this);
-            //this.Disconnect();
+            // remove the plugin from the plugins collection
+            this.application.Plugins.Remove(this);
+    
+            // call disconnect
+            this.Disconnect();
+
+
             var pluginSystem = this.diProvider.Resolve<PluginSystem>();
             pluginSystem.UnloadPlugin(this);
         };
@@ -65,21 +70,21 @@ public class MainMenuPluigin : IPlugin<Application>
         this.application = null;
     }
 
-    public void UnloadPlugin(IPlugin<Application> plugin)
-    {
-        // remove the plugin from the plugins collection
-        this.application.Plugins.Remove(plugin);
-
-        // find the assembly load context for the plugin but exclude the Default context
-        var context = AssemblyLoadContext.All.FirstOrDefault(x => x.Assemblies.Any(asm => asm.Equals(plugin.GetType().Assembly)));
-
-        // check how many other plugins are using the same context
-        var count = this.application.Plugins.Count(x => x.GetType().Assembly.Equals(context.Assemblies.FirstOrDefault()));
-
-        // if there are no other plugins using the same context then unload it
-        if (count == 0)
-        {
-            context.Unload();
-        }
-    }
+    // public void UnloadPlugin(IPlugin<Application> plugin)
+    // {
+    //     // remove the plugin from the plugins collection
+    //     this.application.Plugins.Remove(plugin);
+    //
+    //     // find the assembly load context for the plugin but exclude the Default context
+    //     var context = AssemblyLoadContext.All.FirstOrDefault(x => x.Assemblies.Any(asm => asm.Equals(plugin.GetType().Assembly)));
+    //
+    //     // check how many other plugins are using the same context
+    //     var count = this.application.Plugins.Count(x => x.GetType().Assembly.Equals(context.Assemblies.FirstOrDefault()));
+    //
+    //     // if there are no other plugins using the same context then unload it
+    //     if (count == 0)
+    //     {
+    //         context.Unload();
+    //     }
+    // }
 }

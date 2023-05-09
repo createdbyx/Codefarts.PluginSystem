@@ -1,52 +1,71 @@
 ﻿using System.Collections.ObjectModel;
+using System.Net.Mime;
 using System.Reflection;
+using System.Reflection.Metadata;
 using System.Runtime.Loader;
 
 namespace Codefarts.PluginSystem;
 
+public class PluginEntry
+{
+    public string TypeName { get; set; }
+    public string AssemblyFile { get; set; }
+    public AssemblyLoadContext Context { get; set; }
+    public object PluginReference { get; set; }
+}
+
 public class PluginSystem
 {
-    private Dictionary<string, AssemblyLoadContext> pluginContexts;
+    private Dictionary<string, PluginEntry> pluginContexts;
+    public event Func<AssemblyLoadContext, AssemblyName, Assembly>? Resolving;
 
-    public IReadOnlyDictionary<string, AssemblyLoadContext> PluginContexts
+    public IReadOnlyDictionary<string, PluginEntry> PluginContexts
     {
         get
         {
-            return new ReadOnlyDictionary<string, AssemblyLoadContext>(this.pluginContexts);
+            return new ReadOnlyDictionary<string, PluginEntry>(this.pluginContexts);
         }
     }
 
     public PluginSystem()
     {
-        this.pluginContexts = new Dictionary<string, AssemblyLoadContext>();
+        this.pluginContexts = new Dictionary<string, PluginEntry>();
     }
 
     public void UnloadPlugin<T>(T plugin)
     {
-        // remove the plugin from the plugins collection
-        this.app.Plugins.Remove(plugin);
+        // find the entry that matched the plugin
+        var entry = this.pluginContexts.FirstOrDefault(x => x.Value.PluginReference.Equals(plugin));
 
-        // call disconnect
-        plugin.Disconnect();
-
-        // find the assembly load context for the plugin but exclude the Default context
-        var context = AssemblyLoadContext.All.FirstOrDefault(x => x.Assemblies.Any(asm => asm.Equals(plugin.GetType().Assembly)));
-
-        // check how many other plugins are using the same context
-        var count = this.app.Plugins.Count(x => x.GetType().Assembly.Equals(context.Assemblies.FirstOrDefault()));
-
-        // if there are no other plugins using the same context then unload it
-        if (count == 0)
+        // check if entry was found
+        if (entry.Value == null)
         {
-            context.Unload();
+            return;
         }
+
+        // remove the entry from the dictionary
+        this.pluginContexts.Remove(entry.Key);
+
+        // unload the context
+        entry.Value.Context.Unload();
+
+        // // find the assembly load context for the plugin but exclude the Default context
+        // var context = AssemblyLoadContext.All.FirstOrDefault(x => x.Assemblies.Any(asm => asm.Equals(plugin.GetType().Assembly)));
+        //                  AssemblyLoadContext.Default.
+        // // check how many other plugins are using the same context
+        // var count = this.app.Plugins.Count(x => x.GetType().Assembly.Equals(context.Assemblies.FirstOrDefault()));
+        //
+        // // if there are no other plugins using the same context then unload it
+        // if (count == 0)
+        // {
+        //     context.Unload();
+        // }
     }
 
-    public void LoadPlugins<T>(IEnumerable<string> assemblyFiles)
+    public void LoadPlugins<T>(IEnumerable<string> pluginFiles, Func<Type, T> instanciationCallback)
     {
         // build plugin folder path
-//        var path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Plugins");
-
+//        var path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Plugins");   
 
         // find all plugin assemblies by there association with a .plugin file
         // var files = searchFolders.SelectMany(sf=> Directory.GetFiles(sf, "*.plugin", SearchOption.AllDirectories)
@@ -59,42 +78,61 @@ public class PluginSystem
         // files.AddRange(AppDomain.CurrentDomain.GetAssemblies().Select(x => x.Location));
 
 
-        var foundTypes = TypeLocator.TypeLocator.FindPublicClassesThatAreAssagnableTo<T>(assemblyFiles);
+        // var foundTypes = TypeLocator.TypeLocator.FindPublicClassesThatAreAssagnableTo<T>(assemblyFiles);
+        var reader = new PluginReader();
+        var foundTypes = pluginFiles.Where(x => Path.GetExtension(x).Equals(".plugin", StringComparison.InvariantCultureIgnoreCase))
+                                    .SelectMany(f =>
+                                    {
+                                        var pluginInfos = reader.Read(f);
+
+                                        return pluginInfos.Select(y =>
+                                                                      (TypeName: y.TypeName,
+                                                                          AssemblyFile: y.AssemblyFile,
+                                                                          FullAssemblyFilePath: Path.IsPathRooted(y.AssemblyFile)
+                                                                              ? y.AssemblyFile
+                                                                              : Path.Combine(Path.GetDirectoryName(f), y.AssemblyFile)
+                                                                      )
+                                        );
+                                    }).ToArray();
+
 
         // create types
         foreach (var item in foundTypes)
         {
             // generate a load context name by taking the full file path and appending the plugin name to the end
-            var loadContextName = $"{item.Type} ==> {item.File}";
+            var loadContextName = $"{item.TypeName} ==> {item.AssemblyFile}";
 
             // create a new assembly load context for the plugin
             var context = this.CreateAsslemblyLoadContextForFile(loadContextName);
 
             // load the assembly file into the context
-            var assembly = context.LoadFromAssemblyPath(item.File);
-                         
+            var assembly = context.LoadFromAssemblyPath(item.FullAssemblyFilePath);
+
             // get the type from the assembly
-            var type = assembly.GetType(item.Type);
+            var type = assembly.GetType(item.TypeName);
 
-            // create the plugin using the dependency injection provider
-            var plugin = this.diProvider.Resolve(type) as T;
+            var plugin = instanciationCallback(type);
 
-            // add the plugin to the plugins collection
-            this.app.Plugins.Add(plugin);
+            PluginEntry entry = new PluginEntry()
+            {
+                TypeName = item.TypeName,
+                AssemblyFile = item.FullAssemblyFilePath,
+                Context = context,
+                PluginReference = plugin
+            };
 
-            // call connect on the plugin
-            plugin.Connect(this.app);
+            this.pluginContexts.Add(loadContextName, entry);
         }
     }
 
-    private MetadataLoadContext CreateAsslemblyMetadataLoadContextForFile(string file)
-    {
-        // Create PathAssemblyResolver that can resolve assemblies using the created list.
-        var resolver = new PathAssemblyResolver(new[] { file });
-
-        // create a new metadata assembly load context for the file
-        return new MetadataLoadContext(resolver);
-    }
+    // private MetadataLoadContext CreateAsslemblyMetadataLoadContextForFile(string file)
+    // {
+    //     // Create PathAssemblyResolver that can resolve assemblies using the created list.
+    //     var resolver = new PathAssemblyResolver(new[] { file });
+    //
+    //     // create a new metadata assembly load context for the file
+    //     return new MetadataLoadContext(resolver);
+    // }
 
     private AssemblyLoadContext CreateAsslemblyLoadContextForFile(string name)
     {
@@ -102,10 +140,10 @@ public class PluginSystem
         var context = new AssemblyLoadContext(name, true);
 
         // hook into the resolving event so that we can load any dependencies
-        context.Resolving += this.OnContextResolving;
+        context.Resolving += this.Resolving ?? this.OnContextResolving;
 
         // add the context to the collection
-        this.pluginContexts.Add(name, context);
+        //  this.pluginContexts.Add(name, context);
 
         return context;
     }

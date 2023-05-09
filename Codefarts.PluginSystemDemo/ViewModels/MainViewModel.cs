@@ -33,11 +33,23 @@ public class MainViewModel : BaseClass
         };
         var path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Plugins");
         var files = Directory.GetFiles(path, "*.plugin", SearchOption.AllDirectories);
-        var reader = this.diProvider.Resolve<PluginReader>();
-        var results = files.SelectMany(f => reader.Read(f)).ToArray();
+        //var reader = this.diProvider.Resolve<PluginReader>();
+        //var results = files.SelectMany(f => reader.Read(f)).ToArray();
 
         //.Select(x => Path.ChangeExtension(x, ".dll")).ToList());
-        this.pluginSystem.LoadPlugins<IPlugin<Application>>(files);
+        this.pluginSystem.LoadPlugins<IPlugin<Application>>(files, type =>
+        {
+            // create the plugin using the dependency injection provider
+            var plugin = this.diProvider.Resolve(type) as IPlugin<Application>;
+
+            // add the plugin to the plugins collection
+            this.application.Plugins.Add(plugin);
+
+            // call connect on the plugin
+            plugin.Connect(this.application);
+
+            return plugin;
+        });
     }
 
     // private ICommand PluginCreated

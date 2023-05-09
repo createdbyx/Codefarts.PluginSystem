@@ -1,3 +1,4 @@
 <plugins>
     <plugin class="MainMenuPlugin.MainMenuPlugin" assembly="MainMenuPlugin.dll" />
+    <plugin class="MainMenuPlugin.InternalTestPlugin" assembly="MainMenuPlugin.dll" />
 </plugins>

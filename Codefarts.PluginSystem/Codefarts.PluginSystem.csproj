@@ -6,13 +6,5 @@
         <Nullable>enable</Nullable>
         <LangVersion>default</LangVersion>
     </PropertyGroup>
-
-    <ItemGroup>
-      <ProjectReference Include="..\..\Codefarts.TypeLocator\Codefarts.TypeLocatorNET6\Codefarts.TypeLocatorNET6.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <PackageReference Include="System.Reflection.MetadataLoadContext" Version="7.0.0" />
-    </ItemGroup>
-
+ 
 </Project>
