@@ -1,10 +1,8 @@
 ﻿using System;
 using System.IO;
-using System.Linq;
 using System.Windows.Input;
 using Codefarts.DependencyInjection;
 using Codefarts.DependencyInjection.CodefartsIoc;
-using Codefarts.PluginSystem;
 using Codefarts.PluginSystemDemo.Models;
 using Codefarts.WPFCommon.Commands;
 
@@ -26,15 +24,9 @@ public class MainViewModel : BaseClass
 
         this.pluginSystem = this.diProvider.Resolve<PluginSystem.PluginSystem>();
         this.diProvider.Register<PluginSystem.PluginSystem>(() => this.pluginSystem);
-        var paths = new[]
-        {
-            Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Plugins"),
-            AppDomain.CurrentDomain.BaseDirectory,
-        };
+        
         var path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Plugins");
         var files = Directory.GetFiles(path, "*.plugin", SearchOption.AllDirectories);
-        //var reader = this.diProvider.Resolve<PluginReader>();
-        //var results = files.SelectMany(f => reader.Read(f)).ToArray();
 
         //.Select(x => Path.ChangeExtension(x, ".dll")).ToList());
         this.pluginSystem.LoadPlugins<IPlugin<Application>>(files, type =>
@@ -52,20 +44,6 @@ public class MainViewModel : BaseClass
         });
     }
 
-    // private ICommand PluginCreated
-    // {
-    //     get
-    //     {
-    //         return new GenericDelegateCommand<Type>(p => !this.application.Plugins.Any(x => x.GetType().Equals(p)),
-    //                                                 type =>
-    //                                                 {
-    //                                                     var plugin = this.diProvider.Resolve(type) as IPlugin<Application>;
-    //                                                     this.application.Plugins.Add(plugin);
-    //                                                     plugin.Connect(this.application);
-    //                                                 });
-    //     }
-    // }
-
     public ICommand RunMenuItem
     {
         get
@@ -78,7 +56,6 @@ public class MainViewModel : BaseClass
             });
         }
     }
-
 
     public Application Application
     {

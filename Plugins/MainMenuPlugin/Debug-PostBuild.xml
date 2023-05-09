@@ -11,6 +11,4 @@
     </copydir>
 
     <updateversion ProjectFileName="$(ProjectPath)"/>
-    
-    <metagenerator source="$(ProjectPath)"  />
 </build>
