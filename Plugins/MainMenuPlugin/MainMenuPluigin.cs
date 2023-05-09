@@ -1,5 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Runtime.Loader;
+using Codefarts.DependencyInjection;
+using Codefarts.PluginSystem;
 using Codefarts.PluginSystemDemo.Models;
 
 namespace MainMenuPlugin;
@@ -12,6 +14,13 @@ public class MainMenuPluigin : IPlugin<Application>
     private MenuItem disconnectexceptionMenuItem;
     private MenuItem exitMenuItem;
 
+    private IDependencyInjectionProvider diProvider;
+
+    public MainMenuPluigin(IDependencyInjectionProvider diProvider)
+    {
+        this.diProvider = diProvider ?? throw new ArgumentNullException(nameof(diProvider));
+    }
+
     public void Connect(Application model)
     {
         this.application = model ?? throw new ArgumentNullException(nameof(model));
@@ -23,8 +32,10 @@ public class MainMenuPluigin : IPlugin<Application>
         disconnectexceptionMenuItem = new MenuItem { Title = "_Disconnect" };
         disconnectexceptionMenuItem.Selected += (s, e) =>
         {
-            UnloadPlugin(this);
-            this.Disconnect();
+            //   UnloadPlugin(this);
+            //this.Disconnect();
+            var pluginSystem = this.diProvider.Resolve<PluginSystem>();
+            pluginSystem.UnloadPlugin(this);
         };
 
         exitMenuItem = new MenuItem { Title = "E_xit" };

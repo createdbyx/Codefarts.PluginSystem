@@ -12,7 +12,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="Codefarts.DependencyInjection" Version="2023.4.26.15" />
+      <PackageReference Include="System.Reflection.MetadataLoadContext" Version="7.0.0" />
     </ItemGroup>
 
 </Project>

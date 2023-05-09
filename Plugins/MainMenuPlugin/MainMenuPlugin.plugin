@@ -1,0 +1,3 @@
+<plugins>
+    <plugin class="MainMenuPlugin.MainMenuPlugin" assembly="MainMenuPlugin.dll" />
+</plugins>
